@@ -373,8 +373,8 @@ button {
 .detail-hero {
   display: grid;
   justify-items: center;
-  gap: 8px;
-  padding-top: 8px;
+  gap: 6px;
+  padding-top: 2px;
 }
 
 .detail-card {
@@ -502,13 +502,13 @@ button {
   }
 
   .screen {
-    gap: 10px;
+    gap: 8px;
   }
 
   .topbar,
   .detail-topbar {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
   .segment-tabs {
@@ -522,13 +522,123 @@ button {
   .detail-card,
   .notice-text,
   .bottom-actions {
-    margin-left: 10px;
-    margin-right: 10px;
-    box-shadow: 0 10px 24px rgba(117, 81, 121, 0.08);
+    margin-left: 14px;
+    margin-right: 14px;
+    box-shadow: 0 8px 22px rgba(117, 81, 121, 0.07);
   }
 
   .topbar h1,
   .detail-topbar h1 {
     font-size: 17px;
+  }
+
+  .screen[data-screen="detail"] {
+    gap: 14px;
+    padding-bottom: 10px;
+  }
+
+  .detail-topbar {
+    min-height: 42px;
+    align-items: center;
+  }
+
+  .detail-topbar .icon-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+
+  .detail-topbar h1 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #4b4050;
+  }
+
+  .detail-topbar__spacer {
+    width: 32px;
+  }
+
+  .detail-hero {
+    gap: 10px;
+    padding-top: 6px;
+  }
+
+  .detail-hero h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #4a4050;
+  }
+
+  .pending-card__icon--large {
+    width: 68px;
+    height: 68px;
+    flex-basis: 68px;
+    color: #b3a3b7;
+  }
+
+  .detail-card {
+    padding: 10px 14px;
+    border-radius: 22px;
+  }
+
+  .detail-row {
+    padding: 11px 0;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .detail-row span:first-child {
+    font-size: 15px;
+    color: #7f6886;
+    white-space: nowrap;
+  }
+
+  .detail-row strong,
+  .detail-row .badge {
+    font-size: 15px;
+    text-align: right;
+  }
+
+  .detail-row strong {
+    color: #4d4352;
+  }
+
+  .detail-row .success {
+    color: var(--success);
+  }
+
+  .detail-row .warning {
+    color: var(--warning);
+  }
+
+  .badge {
+    padding: 6px 12px;
+    font-size: 13px !important;
+    white-space: nowrap;
+  }
+
+  .notice-text {
+    padding: 12px 14px;
+    border-radius: 22px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #8c7f91;
+  }
+
+  .notice-text p {
+    margin-bottom: 7px;
+  }
+
+  .bottom-actions {
+    padding: 10px;
+    border-radius: 22px;
+    gap: 10px;
+  }
+
+  .outline-button {
+    min-height: 48px;
+    border-radius: 15px;
+    font-size: 18px;
+    color: #925b9d;
   }
 }
