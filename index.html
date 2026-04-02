@@ -153,6 +153,27 @@
           <footer class="bottom-actions app-page__footer" id="page-footer"></footer>
         </section>
       </main>
+
+      <nav class="tabbar" aria-label="Alt gezinme">
+        <button class="tabbar__item tabbar__item--active" type="button" data-route="summary" data-tab="summary">
+          <span class="tabbar__icon tabbar__icon--home"></span>
+          <span>Özet</span>
+        </button>
+        <button class="tabbar__item" type="button" data-route="transfers" data-tab="transfers">
+          <span class="tabbar__icon tabbar__icon--transfer"></span>
+          <span>Transfer</span>
+        </button>
+        <button class="tabbar__item" type="button" data-route="cards" data-tab="cards">
+          <span class="tabbar__icon tabbar__icon--cards"></span>
+          <span>Kartlar</span>
+        </button>
+        <button class="tabbar__item" type="button" data-route="profile" data-tab="profile">
+          <span class="tabbar__icon tabbar__icon--profile"></span>
+          <span>Profil</span>
+        </button>
+      </nav>
+
+      <div class="toast" id="toast" aria-live="polite"></div>
     </div>
 
     <script src="./app.js"></script>

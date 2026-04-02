@@ -3,6 +3,25 @@ const pageTitle = document.querySelector("#page-title");
 const pageHero = document.querySelector("#page-hero");
 const pageBody = document.querySelector("#page-body");
 const pageFooter = document.querySelector("#page-footer");
+const toast = document.querySelector("#toast");
+const tabItems = document.querySelectorAll(".tabbar__item");
+
+const state = {
+  currentRoute: "summary",
+  history: [],
+  forms: {
+    loan: { amount: "120.000", maturity: "12 ay", income: "75.000 TL" },
+    card: { limit: "85.000", city: "İstanbul", delivery: "Ev adresim" },
+    support: { topic: "Bekleyen SWIFT işlemi", message: "" },
+    transfer: { name: "MELIKE LACIN", iban: "TRXX XXXX XXXX XX", amount: "7.500" },
+  },
+  latestActions: {
+    loan: null,
+    card: null,
+    support: null,
+    transfer: null,
+  },
+};
 
 const HOURGLASS_ICON = `
   <div class="pending-card__icon pending-card__icon--large" aria-hidden="true">
@@ -12,61 +31,144 @@ const HOURGLASS_ICON = `
   </div>
 `;
 
+function iconHero(iconClass, title, text) {
+  return `
+    <div class="page-icon ${iconClass}" aria-hidden="true"></div>
+    <h2>${title}</h2>
+    <p>${text}</p>
+  `;
+}
+
 const appPages = {
   menu: {
+    tab: "summary",
     title: "Hızlı Menü",
-    hero: `
-      <div class="page-icon page-icon--menu" aria-hidden="true"><span></span><span></span><span></span></div>
-      <h2>Sık kullanılan işlemler</h2>
-      <p>En sık ziyaret edilen bölümlere tek dokunuşla geç.</p>
-    `,
+    hero: iconHero("page-icon--menu", "Sık kullanılan işlemler", "Ana akışların tamamına hızlı erişim sağlar."),
     sections: [
       {
-        type: "list",
-        title: "Menü",
+        type: "grid",
         items: [
-          { label: "Vadesiz TL hesabım", value: "Detaya git", route: "tl-account" },
-          { label: "Diğer banka hesapları", value: "Görüntüle", route: "other-accounts" },
+          { label: "Transfer", value: "Gönder", route: "transfer-form" },
+          { label: "Kredi", value: "Başvur", route: "loan-form" },
+          { label: "Kart", value: "İncele", route: "cards" },
+          { label: "Profil", value: "Aç", route: "profile" },
+        ],
+      },
+      {
+        type: "list",
+        title: "Kısayollar",
+        items: [
           { label: "Bildirim merkezi", value: "Aç", route: "notifications" },
           { label: "Destek merkezi", value: "Aç", route: "support" },
+          { label: "Bekleyen SWIFT", value: "İzle", route: "swift-tracker" },
         ],
       },
     ],
-    footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Bildirimler", route: "notifications", kind: "outline" },
-    ],
   },
   notifications: {
+    tab: "summary",
     title: "Bildirimler",
-    hero: `
-      <div class="page-icon page-icon--bell" aria-hidden="true"></div>
-      <h2>Son sistem bildirimleri</h2>
-      <p>İşlem ve durum güncellemelerin burada listelenir.</p>
-    `,
+    hero: iconHero("page-icon--bell", "Son bildirimler", "İşlem, başvuru ve transfer güncellemeleri burada görünür."),
     sections: [
       {
         type: "timeline",
         title: "Bugün",
         items: [
           { label: "SWIFT transferin dağıtım aşamasında", meta: "14:29", route: "swift-detail" },
-          { label: "Gelen transfer hesabına işlendi", meta: "13:10", route: "incoming-transfer" },
-          { label: "Kredi kartı ön onayı hazır", meta: "10:41", route: "credit-card" },
+          { label: "Transfer alıcı bilgisi son kayıtta kullanıldı", meta: "13:52", route: "transfer-form" },
+          { label: "Kredi kartı başvuruna özel teklif hazır", meta: "10:41", route: "credit-card-form" },
         ],
       },
     ],
-    footer: [
-      { label: "Destek Al", route: "support", kind: "outline" },
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
+  },
+  transfers: {
+    tab: "transfers",
+    title: "Transferler",
+    hero: iconHero("page-icon--transfer-in", "Para transfer merkezi", "Gönder, geçmişi incele ve bekleyen işlemleri takip et."),
+    sections: [
+      {
+        type: "grid",
+        items: [
+          { label: "Para Gönder", value: "Yeni işlem", route: "transfer-form" },
+          { label: "Bekleyen SWIFT", value: "Detay", route: "swift-detail" },
+          { label: "Gelen Transfer", value: "İncele", route: "incoming-transfer" },
+          { label: "Giden Transfer", value: "İncele", route: "outgoing-transfer" },
+        ],
+      },
+      {
+        type: "stats",
+        items: [
+          { label: "Bugünkü çıkış", value: "-190,00 TL", tone: "warning" },
+          { label: "Bugünkü giriş", value: "+190,00 TL", tone: "success" },
+          { label: "Bekleyen işlem", value: "1 adet", tone: "default" },
+        ],
+      },
+    ],
+  },
+  cards: {
+    tab: "cards",
+    title: "Kartlar",
+    hero: iconHero("page-icon--card", "Kart merkezim", "Kart başvuruları, limit teklifi ve dijital kart işlemleri."),
+    sections: [
+      {
+        type: "card-showcase",
+        title: "Enpara Kredi Kartı",
+        content: "Temassız, sanal kart uyumlu ve taksitli alışveriş özellikli.",
+        actionLabel: "Başvuruya Geç",
+        route: "credit-card-form",
+      },
+      {
+        type: "list",
+        title: "Kart işlemleri",
+        items: [
+          { label: "Başvuru ekranı", value: "Aç", route: "credit-card-form" },
+          { label: "Mevcut teklif", value: "İncele", route: "credit-card" },
+          { label: "Destek", value: "Aç", route: "support-form" },
+        ],
+      },
+    ],
+  },
+  profile: {
+    tab: "profile",
+    title: "Profil",
+    hero: iconHero("page-icon--profile", "Hesap ve ayarlar", "Kişisel bilgiler, güvenlik ve uygulama tercihleri."),
+    sections: [
+      {
+        type: "profile",
+        name: "Miraç Özbağ",
+        meta: "Bireysel müşteri • Güvenli giriş aktif",
+      },
+      {
+        type: "list",
+        title: "Profil seçenekleri",
+        items: [
+          { label: "Hesap ayarları", value: "Görüntüle", route: "settings" },
+          { label: "Bildirim tercihleri", value: "Aç", route: "notifications" },
+          { label: "Destek merkezi", value: "Aç", route: "support" },
+        ],
+      },
+    ],
+  },
+  settings: {
+    tab: "profile",
+    title: "Hesap Ayarları",
+    hero: iconHero("page-icon--support", "Uygulama tercihleri", "Güvenlik, bildirim ve hesap yönetimi seçenekleri."),
+    sections: [
+      {
+        type: "list",
+        title: "Ayarlar",
+        items: [
+          { label: "Bildirimler", value: "Açık" },
+          { label: "Biyometrik giriş", value: "Aktif" },
+          { label: "Uygulama dili", value: "Türkçe" },
+        ],
+      },
     ],
   },
   "tl-account": {
+    tab: "summary",
     title: "Vadesiz TL",
-    hero: `
-      <div class="page-icon page-icon--account" aria-hidden="true"></div>
-      <h2>TL hesap detayın</h2>
-      <p>Bakiyen, hesap bilgilerin ve işlem kısayolların burada.</p>
-    `,
+    hero: iconHero("page-icon--account", "TL hesap detayın", "Bakiye, IBAN ve hızlı işlem seçenekleri."),
     sections: [
       {
         type: "stats",
@@ -78,25 +180,18 @@ const appPages = {
       },
       {
         type: "list",
-        title: "İşlemler",
+        title: "Hızlı işlemler",
         items: [
-          { label: "Son işlemler", value: "Görüntüle", route: "incoming-transfer" },
-          { label: "Bekleyen transfer", value: "Detay", route: "swift-detail" },
+          { label: "Para gönder", value: "Başlat", route: "transfer-form" },
+          { label: "Son gelen transfer", value: "İncele", route: "incoming-transfer" },
         ],
       },
     ],
-    footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Destek Al", route: "support", kind: "outline" },
-    ],
   },
   "usd-account": {
+    tab: "summary",
     title: "Vadesiz USD",
-    hero: `
-      <div class="page-icon page-icon--account" aria-hidden="true"></div>
-      <h2>USD hesap detayın</h2>
-      <p>Döviz hesabına ait bakiye ve hareket özetini görüntüle.</p>
-    `,
+    hero: iconHero("page-icon--account", "USD hesap detayın", "Döviz hesap görünümü ve SWIFT uyumluluk durumu."),
     sections: [
       {
         type: "stats",
@@ -106,19 +201,20 @@ const appPages = {
           { label: "SWIFT uygunluğu", value: "Aktif", tone: "success" },
         ],
       },
-    ],
-    footer: [
-      { label: "Bekleyen SWIFT", route: "swift-detail", kind: "outline" },
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
+      {
+        type: "list",
+        title: "İlgili akışlar",
+        items: [
+          { label: "Bekleyen SWIFT", value: "Detay", route: "swift-detail" },
+          { label: "Transfer merkezi", value: "Aç", route: "transfers" },
+        ],
+      },
     ],
   },
   "other-accounts": {
+    tab: "summary",
     title: "Diğer Banka Hesapları",
-    hero: `
-      <div class="page-icon page-icon--bank" aria-hidden="true"></div>
-      <h2>Tanınan banka hesapların</h2>
-      <p>Transferlerinde kullanabileceğin kayıtlı dış hesaplar.</p>
-    `,
+    hero: iconHero("page-icon--bank", "Tanımlı dış hesapların", "Transferlerde kullanabileceğin kayıtlı banka hesapları."),
     sections: [
       {
         type: "list",
@@ -130,18 +226,11 @@ const appPages = {
         ],
       },
     ],
-    footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Destek Al", route: "support", kind: "outline" },
-    ],
   },
   loan: {
+    tab: "summary",
     title: "İhtiyaç Kredisi",
-    hero: `
-      <div class="page-icon page-icon--loan" aria-hidden="true"></div>
-      <h2>Başvuru özeti</h2>
-      <p>Ön değerlendirme ve teklif detaylarını bu ekranda topladım.</p>
-    `,
+    hero: iconHero("page-icon--loan", "Hazır teklifin", "Ön değerlendirme, limit ve vade özeti."),
     sections: [
       {
         type: "stats",
@@ -151,24 +240,53 @@ const appPages = {
           { label: "Durum", value: "Başvuruya uygun", tone: "warning" },
         ],
       },
-      {
-        type: "text",
-        title: "Bilgilendirme",
-        content: "Faiz ve vade seçenekleri kimlik doğrulaması sonrasında netleşir. Devam ederek dijital başvuru akışına geçebilirsin.",
-      },
     ],
     footer: [
-      { label: "Başvuruya Devam", route: "support", kind: "primary" },
+      { label: "Başvuru Formu", route: "loan-form", kind: "primary" },
       { label: "Ana Sayfa", route: "summary", kind: "outline" },
     ],
   },
+  "loan-form": {
+    tab: "summary",
+    title: "Kredi Başvurusu",
+    hero: iconHero("page-icon--loan", "Başvuru formu", "Tutar, vade ve gelir bilgini girerek dijital başvuruyu tamamla."),
+    sections: [
+      {
+        type: "form",
+        formId: "loan",
+        title: "Başvuru bilgileri",
+        fields: [
+          { name: "amount", label: "Talep edilen tutar", placeholder: "120.000" },
+          { name: "maturity", label: "Vade", placeholder: "12 ay" },
+          { name: "income", label: "Aylık gelir", placeholder: "75.000 TL" },
+        ],
+        submitLabel: "Başvuruyu Gönder",
+        successRoute: "loan-success",
+        successMessage: "Kredi başvurun ön değerlendirmeye alındı.",
+      },
+    ],
+  },
+  "loan-success": {
+    tab: "summary",
+    title: "Başvuru Alındı",
+    hero: iconHero("page-icon--success", "Kredi başvurun alındı", "Ön değerlendirme ekranı oluşturuldu."),
+    sections: [
+      {
+        type: "receipt",
+        title: "Başvuru özeti",
+        formId: "loan",
+        lines: [
+          { label: "Tutar", key: "amount", suffix: " TL" },
+          { label: "Vade", key: "maturity" },
+          { label: "Gelir", key: "income" },
+        ],
+      },
+    ],
+  },
   "credit-card": {
+    tab: "cards",
     title: "Kredi Kartı",
-    hero: `
-      <div class="page-icon page-icon--card" aria-hidden="true"></div>
-      <h2>Kart başvuru ekranı</h2>
-      <p>Limit, teslimat ve kart özellikleri için özet görünüm.</p>
-    `,
+    hero: iconHero("page-icon--card", "Kart teklif ekranı", "Önerilen limit ve teslimat özellikleri."),
     sections: [
       {
         type: "stats",
@@ -180,17 +298,51 @@ const appPages = {
       },
     ],
     footer: [
-      { label: "Başvuruya Geç", route: "support", kind: "primary" },
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
+      { label: "Başvuru Formu", route: "credit-card-form", kind: "primary" },
+      { label: "Kartlar", route: "cards", kind: "outline" },
+    ],
+  },
+  "credit-card-form": {
+    tab: "cards",
+    title: "Kart Başvurusu",
+    hero: iconHero("page-icon--card", "Kart formu", "Limit ve teslimat bilgilerini onaylayarak başvur."),
+    sections: [
+      {
+        type: "form",
+        formId: "card",
+        title: "Kart başvuru bilgileri",
+        fields: [
+          { name: "limit", label: "Talep edilen limit", placeholder: "85.000" },
+          { name: "city", label: "Teslimat ili", placeholder: "İstanbul" },
+          { name: "delivery", label: "Teslimat tipi", placeholder: "Ev adresim" },
+        ],
+        submitLabel: "Kart Başvurusunu Gönder",
+        successRoute: "credit-card-success",
+        successMessage: "Kart başvurun kaydedildi.",
+      },
+    ],
+  },
+  "credit-card-success": {
+    tab: "cards",
+    title: "Kart Başvurusu",
+    hero: iconHero("page-icon--success", "Başvurun tamamlandı", "Teslimat ve limit bilgileri kaydedildi."),
+    sections: [
+      {
+        type: "receipt",
+        title: "Kart özeti",
+        formId: "card",
+        lines: [
+          { label: "Limit", key: "limit", suffix: " TL" },
+          { label: "İl", key: "city" },
+          { label: "Teslimat", key: "delivery" },
+        ],
+      },
     ],
   },
   ekpara: {
+    tab: "summary",
     title: "Ekpara (KMH)",
-    hero: `
-      <div class="page-icon page-icon--wallet" aria-hidden="true"></div>
-      <h2>Ekpara teklifin</h2>
-      <p>Hesabına tanımlanabilecek ek limit bilgisi burada.</p>
-    `,
+    hero: iconHero("page-icon--wallet", "Ekpara teklifin", "Tanımlanabilir ek limit ve aktivasyon bilgisi."),
     sections: [
       {
         type: "stats",
@@ -201,18 +353,11 @@ const appPages = {
         ],
       },
     ],
-    footer: [
-      { label: "Aktivasyon Bilgisi", route: "support", kind: "primary" },
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-    ],
   },
   findeks: {
+    tab: "summary",
     title: "Findeks Risk Raporu",
-    hero: `
-      <div class="page-icon page-icon--score" aria-hidden="true"></div>
-      <h2>Rapor başvurusu</h2>
-      <p>Risk raporu talebi için kısa özet ve işlem adımları.</p>
-    `,
+    hero: iconHero("page-icon--score", "Rapor başvurusu", "Risk raporu talebin için özet akış."),
     sections: [
       {
         type: "stats",
@@ -223,18 +368,11 @@ const appPages = {
         ],
       },
     ],
-    footer: [
-      { label: "Raporu İste", route: "support", kind: "primary" },
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-    ],
   },
   "outgoing-transfer": {
+    tab: "transfers",
     title: "Giden Transfer",
-    hero: `
-      <div class="page-icon page-icon--transfer-out" aria-hidden="true"></div>
-      <h2>İşlem detayı</h2>
-      <p>Bugün gerçekleşen giden transfer hareketinin özeti.</p>
-    `,
+    hero: iconHero("page-icon--transfer-out", "İşlem detayı", "Bugün gerçekleşen giden transfer hareketi."),
     sections: [
       {
         type: "stats",
@@ -245,18 +383,11 @@ const appPages = {
         ],
       },
     ],
-    footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Destek Al", route: "support", kind: "outline" },
-    ],
   },
   "incoming-transfer": {
+    tab: "transfers",
     title: "Gelen Transfer",
-    hero: `
-      <div class="page-icon page-icon--transfer-in" aria-hidden="true"></div>
-      <h2>İşlem detayı</h2>
-      <p>Bugün hesabına geçen bireysel transfer bilgisi.</p>
-    `,
+    hero: iconHero("page-icon--transfer-in", "İşlem detayı", "Bugün hesabına geçen bireysel transfer bilgisi."),
     sections: [
       {
         type: "stats",
@@ -267,17 +398,11 @@ const appPages = {
         ],
       },
     ],
-    footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Destek Al", route: "support", kind: "outline" },
-    ],
   },
   "swift-detail": {
+    tab: "transfers",
     title: "SWIFT Transfer Detayı",
-    hero: `
-      ${HOURGLASS_ICON}
-      <h2>Bekleyen Transfer</h2>
-    `,
+    hero: `${HOURGLASS_ICON}<h2>Bekleyen Transfer</h2>`,
     sections: [
       {
         type: "stats",
@@ -293,50 +418,136 @@ const appPages = {
         ],
       },
       {
-        type: "text",
-        title: "Bilgilendirme",
-        content:
-          "Fon kaynağı teyidi, koruma ve işlem yoğunluğuna göre dağıtım süreci devam eder. Belge talebi oluşmadığı sürece bekleyen işlem bakiyeye yansımak üzere takip edilir.",
+        type: "tracker",
+        title: "İşlem akışı",
+        items: [
+          { label: "UETR doğrulaması", state: "done" },
+          { label: "Muhabir banka eşleşmesi", state: "done" },
+          { label: "Yerel dağıtım", state: "active" },
+          { label: "Bakiyeye yansıma", state: "pending" },
+        ],
       },
     ],
     footer: [
-      { label: "Vazgeç", route: "summary", kind: "outline" },
-      { label: "Destek Al", route: "support", kind: "outline" },
+      { label: "Takip Ekranı", route: "swift-tracker", kind: "primary" },
+      { label: "Destek Al", route: "support-form", kind: "outline" },
     ],
   },
-  support: {
-    title: "Destek Al",
-    hero: `
-      <div class="page-icon page-icon--support" aria-hidden="true"></div>
-      <h2>Destek merkezi</h2>
-      <p>İşleminle ilgili yardım seçenekleri ve hızlı yönlendirmeler.</p>
-    `,
+  "swift-tracker": {
+    tab: "transfers",
+    title: "SWIFT Takip",
+    hero: iconHero("page-icon--transfer-in", "İşlem hareketi", "Bekleyen transferin etap bazlı canlı görünümü."),
     sections: [
       {
-        type: "list",
-        title: "Yardım seçenekleri",
+        type: "tracker",
+        title: "Etaplar",
         items: [
-          { label: "Bekleyen SWIFT işlemi", value: "Detaya git", route: "swift-detail" },
-          { label: "Kart başvurusu desteği", value: "Aç", route: "credit-card" },
-          { label: "Kredi başvurusu desteği", value: "Aç", route: "loan" },
+          { label: "Fon kaynağı teyidi", state: "done" },
+          { label: "UETR eşleştirme", state: "done" },
+          { label: "Yerel dağıtım masası", state: "active" },
+          { label: "Son bakiye dağıtımı", state: "pending" },
         ],
       },
       {
         type: "text",
         title: "Not",
-        content:
-          "Bu beta sürümde destek akışı bilgi ekranı olarak çalışır. İlgili işlemlere geri dönerek sayfa geçişlerini sürdürebilirsin.",
+        content: "Bu demo ekranda işlem ilerledikçe adımlar görsel olarak işaretlenir. Gerçek zamanlı veri yerine beta içerik kullanılır.",
+      },
+    ],
+  },
+  support: {
+    tab: "profile",
+    title: "Destek Al",
+    hero: iconHero("page-icon--support", "Destek merkezi", "İlgili işlemler için yardım ve yönlendirme seçenekleri."),
+    sections: [
+      {
+        type: "list",
+        title: "Yardım seçenekleri",
+        items: [
+          { label: "Bekleyen SWIFT işlemi", value: "Detay", route: "swift-detail" },
+          { label: "Kart başvurusu desteği", value: "Form", route: "support-form" },
+          { label: "Kredi başvurusu desteği", value: "Form", route: "support-form" },
+        ],
       },
     ],
     footer: [
-      { label: "Ana Sayfa", route: "summary", kind: "outline" },
-      { label: "Bildirimler", route: "notifications", kind: "outline" },
+      { label: "Destek Formu", route: "support-form", kind: "primary" },
+      { label: "Profil", route: "profile", kind: "outline" },
+    ],
+  },
+  "support-form": {
+    tab: "profile",
+    title: "Destek Talebi",
+    hero: iconHero("page-icon--support", "Mesaj gönder", "Konu ve kısa açıklama ile destek talebi oluştur."),
+    sections: [
+      {
+        type: "form",
+        formId: "support",
+        title: "Destek bilgileri",
+        fields: [
+          { name: "topic", label: "Konu", placeholder: "Bekleyen SWIFT işlemi" },
+          { name: "message", label: "Mesaj", placeholder: "İşlemimdeki son durumu öğrenmek istiyorum.", multiline: true },
+        ],
+        submitLabel: "Talebi Oluştur",
+        successRoute: "support-success",
+        successMessage: "Destek talebin oluşturuldu.",
+      },
+    ],
+  },
+  "support-success": {
+    tab: "profile",
+    title: "Talep Alındı",
+    hero: iconHero("page-icon--success", "Destek kaydı açıldı", "Talebin sistemde işlendi ve takip numarası üretildi."),
+    sections: [
+      {
+        type: "receipt",
+        title: "Talep özeti",
+        formId: "support",
+        lines: [
+          { label: "Konu", key: "topic" },
+          { label: "Mesaj", key: "message" },
+        ],
+      },
+    ],
+  },
+  "transfer-form": {
+    tab: "transfers",
+    title: "Para Gönder",
+    hero: iconHero("page-icon--transfer-out", "Yeni transfer", "Alıcı bilgilerini doldur ve örnek işlem oluştur."),
+    sections: [
+      {
+        type: "form",
+        formId: "transfer",
+        title: "Transfer bilgileri",
+        fields: [
+          { name: "name", label: "Alıcı adı", placeholder: "MELIKE LACIN" },
+          { name: "iban", label: "IBAN", placeholder: "TRXX XXXX XXXX XX" },
+          { name: "amount", label: "Tutar", placeholder: "7.500" },
+        ],
+        submitLabel: "Transferi Oluştur",
+        successRoute: "transfer-success",
+        successMessage: "Transfer emri oluşturuldu.",
+      },
+    ],
+  },
+  "transfer-success": {
+    tab: "transfers",
+    title: "Transfer Hazır",
+    hero: iconHero("page-icon--success", "Transfer emri oluşturuldu", "Örnek işlem başarıyla kayıt edildi."),
+    sections: [
+      {
+        type: "receipt",
+        title: "İşlem özeti",
+        formId: "transfer",
+        lines: [
+          { label: "Alıcı", key: "name" },
+          { label: "IBAN", key: "iban" },
+          { label: "Tutar", key: "amount", suffix: " TL" },
+        ],
+      },
     ],
   },
 };
-
-let currentRoute = "summary";
-const historyStack = [];
 
 function showScreen(screenName) {
   screens.forEach((screen) => {
@@ -344,23 +555,41 @@ function showScreen(screenName) {
   });
 }
 
+function showToast(message) {
+  if (!message) return;
+  toast.textContent = message;
+  toast.classList.add("toast--visible");
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => {
+    toast.classList.remove("toast--visible");
+  }, 2200);
+}
+
+function updateTabs(route) {
+  const tab = route === "summary" ? "summary" : appPages[route]?.tab || "summary";
+  tabItems.forEach((item) => {
+    item.classList.toggle("tabbar__item--active", item.dataset.tab === tab);
+  });
+}
+
+function renderStatValue(item) {
+  if (item.tone === "badge") return `<span class="badge">${item.value}</span>`;
+  return `<strong class="${item.tone === "muted" ? "page-muted" : item.tone || ""}">${item.value}</strong>`;
+}
+
 function renderSection(section) {
   if (section.type === "stats") {
     return `
       <section class="card detail-card">
         ${section.items
-          .map((item) => {
-            const value =
-              item.tone === "badge"
-                ? `<span class="badge">${item.value}</span>`
-                : `<strong class="${item.tone === "muted" ? "page-muted" : item.tone || ""}">${item.value}</strong>`;
-            return `
+          .map(
+            (item) => `
               <div class="detail-row">
                 <span>${item.label}</span>
-                ${value}
+                ${renderStatValue(item)}
               </div>
-            `;
-          })
+            `,
+          )
           .join("")}
       </section>
     `;
@@ -414,23 +643,148 @@ function renderSection(section) {
     `;
   }
 
+  if (section.type === "grid") {
+    return `
+      <section class="quick-grid page-panel">
+        ${section.items
+          .map(
+            (item) => `
+              <button class="quick-grid__item" type="button" ${item.route ? `data-route="${item.route}"` : ""}>
+                <strong>${item.label}</strong>
+                <span>${item.value}</span>
+              </button>
+            `,
+          )
+          .join("")}
+      </section>
+    `;
+  }
+
+  if (section.type === "tracker") {
+    return `
+      <section class="list-block page-panel tracker-panel">
+        ${section.title ? `<div class="list-block__title">${section.title}</div>` : ""}
+        ${section.items
+          .map(
+            (item) => `
+              <div class="tracker-item">
+                <span class="tracker-item__dot tracker-item__dot--${item.state}"></span>
+                <span>${item.label}</span>
+              </div>
+            `,
+          )
+          .join("")}
+      </section>
+    `;
+  }
+
+  if (section.type === "profile") {
+    return `
+      <section class="profile-card page-panel">
+        <div class="profile-card__avatar">M</div>
+        <div>
+          <strong>${section.name}</strong>
+          <p>${section.meta}</p>
+        </div>
+      </section>
+    `;
+  }
+
+  if (section.type === "card-showcase") {
+    return `
+      <section class="card-showcase page-panel">
+        <div class="card-showcase__visual">
+          <span>enpara.com</span>
+          <strong>Digital Card</strong>
+        </div>
+        <div class="card-showcase__content">
+          <h3>${section.title}</h3>
+          <p>${section.content}</p>
+          <button class="primary-button card-showcase__button" type="button" data-route="${section.route}">${section.actionLabel}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  if (section.type === "form") {
+    const values = state.forms[section.formId] || {};
+    return `
+      <section class="form-panel page-panel">
+        ${section.title ? `<div class="list-block__title">${section.title}</div>` : ""}
+        <div class="form-panel__fields">
+          ${section.fields
+            .map((field) => {
+              const value = values[field.name] || "";
+              if (field.multiline) {
+                return `
+                  <label class="form-field">
+                    <span>${field.label}</span>
+                    <textarea data-form="${section.formId}" data-field="${field.name}" rows="4" placeholder="${field.placeholder || ""}">${value}</textarea>
+                  </label>
+                `;
+              }
+              return `
+                <label class="form-field">
+                  <span>${field.label}</span>
+                  <input data-form="${section.formId}" data-field="${field.name}" value="${value}" placeholder="${field.placeholder || ""}" />
+                </label>
+              `;
+            })
+            .join("")}
+        </div>
+        <button
+          class="primary-button form-panel__submit"
+          type="button"
+          data-submit="${section.formId}"
+          data-success-route="${section.successRoute}"
+          data-success-message="${section.successMessage || ""}"
+        >
+          ${section.submitLabel}
+        </button>
+      </section>
+    `;
+  }
+
+  if (section.type === "receipt") {
+    const values = state.forms[section.formId] || {};
+    return `
+      <section class="card detail-card">
+        ${section.title ? `<div class="receipt-title">${section.title}</div>` : ""}
+        ${section.lines
+          .map(
+            (line) => `
+              <div class="detail-row">
+                <span>${line.label}</span>
+                <strong>${(values[line.key] || "-") + (line.suffix || "")}</strong>
+              </div>
+            `,
+          )
+          .join("")}
+      </section>
+    `;
+  }
+
   return "";
 }
 
-function renderFooter(footer = []) {
-  pageFooter.innerHTML = footer
+function renderFooter(footer = [], route) {
+  const actions = footer.length
+    ? footer
+    : [
+        { label: "Geri", route: state.history[state.history.length - 1] || "summary", kind: "outline" },
+        { label: "Ana Sayfa", route: "summary", kind: "outline" },
+      ];
+
+  pageFooter.innerHTML = actions
     .map(
       (action) => `
-        <button
-          class="${action.kind === "primary" ? "primary-button" : "outline-button"}"
-          type="button"
-          data-route="${action.route}"
-        >
+        <button class="${action.kind === "primary" ? "primary-button" : "outline-button"}" type="button" data-route="${action.route}">
           ${action.label}
         </button>
       `,
     )
     .join("");
+  pageFooter.dataset.route = route;
 }
 
 function renderPage(route) {
@@ -440,34 +794,50 @@ function renderPage(route) {
     return;
   }
 
-  currentRoute = route;
+  state.currentRoute = route;
   pageTitle.textContent = page.title;
   pageHero.innerHTML = page.hero || "";
   pageBody.innerHTML = (page.sections || []).map(renderSection).join("");
-  renderFooter(page.footer);
+  renderFooter(page.footer, route);
   showScreen("page");
+  updateTabs(route);
 }
 
 function showRoute(route, pushHistory = true) {
-  if (route === "summary") {
-    if (pushHistory && currentRoute !== "summary") {
-      historyStack.push(currentRoute);
-    }
-    currentRoute = "summary";
-    showScreen("summary");
-    return;
+  if (pushHistory && state.currentRoute !== route) {
+    state.history.push(state.currentRoute);
   }
 
-  if (pushHistory && currentRoute !== route) {
-    historyStack.push(currentRoute);
+  if (route === "summary") {
+    state.currentRoute = "summary";
+    showScreen("summary");
+    updateTabs("summary");
+    return;
   }
 
   renderPage(route);
 }
 
 function goBack() {
-  const previous = historyStack.pop() || "summary";
+  const previous = state.history.pop() || "summary";
   showRoute(previous, false);
+}
+
+function persistField(input) {
+  const { form, field } = input.dataset;
+  if (!form || !field) return;
+  state.forms[form][field] = input.value.trim();
+}
+
+function handleSubmit(button) {
+  const formId = button.dataset.submit;
+  const successRoute = button.dataset.successRoute;
+  const message = button.dataset.successMessage;
+
+  document.querySelectorAll(`[data-form="${formId}"]`).forEach((field) => persistField(field));
+  state.latestActions[formId] = new Date().toISOString();
+  if (message) showToast(message);
+  if (successRoute) showRoute(successRoute);
 }
 
 function handleInteraction(event) {
@@ -475,6 +845,13 @@ function handleInteraction(event) {
   if (routeButton) {
     event.preventDefault();
     showRoute(routeButton.dataset.route);
+    return;
+  }
+
+  const submitButton = event.target.closest("[data-submit]");
+  if (submitButton) {
+    event.preventDefault();
+    handleSubmit(submitButton);
     return;
   }
 
@@ -486,7 +863,10 @@ function handleInteraction(event) {
 }
 
 document.addEventListener("click", handleInteraction);
-document.addEventListener("pointerup", handleInteraction);
+document.addEventListener("input", (event) => {
+  const field = event.target.closest("[data-form][data-field]");
+  if (field) persistField(field);
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -503,3 +883,5 @@ if ("caches" in window) {
     });
   });
 }
+
+updateTabs("summary");
