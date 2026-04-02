@@ -43,7 +43,6 @@ button {
 .app-shell {
   width: 100%;
   min-height: 100dvh;
-  max-width: 430px;
   padding:
     max(14px, env(safe-area-inset-top))
     14px
@@ -462,10 +461,74 @@ button {
 
   .app-shell {
     max-width: 430px;
+    padding-left: 14px;
+    padding-right: 14px;
     border: 1px solid rgba(155, 90, 168, 0.12);
     border-radius: 36px;
     background: rgba(255, 255, 255, 0.62);
     backdrop-filter: blur(16px);
     box-shadow: 0 30px 80px rgba(86, 55, 91, 0.18);
+  }
+}
+
+@media (max-width: 699px) {
+  html,
+  body {
+    background: #ffffff;
+  }
+
+  body {
+    display: block;
+  }
+
+  .app-shell {
+    max-width: none;
+    padding:
+      max(8px, env(safe-area-inset-top))
+      0
+      max(10px, env(safe-area-inset-bottom))
+      0;
+    background: #ffffff;
+  }
+
+  .statusbar {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 6px;
+  }
+
+  .phone-screen {
+    min-height: calc(100dvh - 44px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  .screen {
+    gap: 10px;
+  }
+
+  .topbar,
+  .detail-topbar {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .segment-tabs {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .account-card,
+  .list-block,
+  .pending-card,
+  .detail-card,
+  .notice-text,
+  .bottom-actions {
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: 0 10px 24px rgba(117, 81, 121, 0.08);
+  }
+
+  .topbar h1,
+  .detail-topbar h1 {
+    font-size: 17px;
   }
 }
