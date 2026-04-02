@@ -470,18 +470,23 @@ function goBack() {
   showRoute(previous, false);
 }
 
-document.addEventListener("click", (event) => {
+function handleInteraction(event) {
   const routeButton = event.target.closest("[data-route]");
   if (routeButton) {
+    event.preventDefault();
     showRoute(routeButton.dataset.route);
     return;
   }
 
   const backButton = event.target.closest("[data-action='back']");
   if (backButton) {
+    event.preventDefault();
     goBack();
   }
-});
+}
+
+document.addEventListener("click", handleInteraction);
+document.addEventListener("pointerup", handleInteraction);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

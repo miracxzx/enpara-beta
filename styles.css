@@ -38,11 +38,6 @@ body {
 
 button {
   font: inherit;
-  appearance: none;
-  -webkit-appearance: none;
-  border: 0;
-  outline: 0;
-  box-shadow: none;
 }
 
 button,
@@ -278,15 +273,15 @@ button,
 
 .account-row--button,
 .history-item--button {
+  all: unset;
   width: 100%;
-  border: 0;
-  background: transparent;
   color: inherit;
-  text-align: left;
   cursor: pointer;
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .account-row strong,
@@ -321,14 +316,15 @@ button,
 }
 
 .list-row {
+  all: unset;
   padding: 8px 0;
-  border: 0;
-  background: transparent;
   color: inherit;
   cursor: pointer;
-  margin: 0;
-  border-radius: 0;
-  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .list-row + .list-row,
@@ -352,12 +348,18 @@ button,
 }
 
 .pending-card {
+  all: unset;
   width: 100%;
   padding: 16px;
   gap: 14px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  margin: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .pending-card__icon {
