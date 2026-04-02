@@ -40,6 +40,12 @@ button {
   font: inherit;
 }
 
+button,
+.history-item--button,
+.account-row--button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .app-shell {
   width: 100%;
   min-height: 100dvh;
@@ -265,6 +271,16 @@ button {
   justify-content: space-between;
 }
 
+.account-row--button,
+.history-item--button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .account-row strong,
 .history-item strong,
 .detail-row strong {
@@ -372,6 +388,166 @@ button {
   justify-items: center;
   gap: 6px;
   padding-top: 2px;
+}
+
+.app-page {
+  gap: 12px;
+}
+
+.app-page__topbar {
+  align-items: center;
+}
+
+.app-page__hero,
+.app-page__body {
+  display: grid;
+  gap: 12px;
+}
+
+.app-page__hero {
+  justify-items: center;
+  text-align: center;
+  padding: 4px 18px 0;
+}
+
+.app-page__hero h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #4a4050;
+}
+
+.app-page__hero p {
+  margin: 0;
+  color: #8f8292;
+  line-height: 1.45;
+}
+
+.app-page__footer {
+  margin-top: auto;
+}
+
+.page-panel {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+.page-muted {
+  color: var(--muted);
+}
+
+.primary-button {
+  flex: 1;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 1px solid #9b5aa8;
+  background: linear-gradient(180deg, #ae71bc 0%, #9257a0 100%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #f8eff8 0%, #f1e3f3 100%);
+  position: relative;
+  color: #9b5aa8;
+}
+
+.page-icon--menu {
+  display: grid;
+  place-content: center;
+  gap: 6px;
+}
+
+.page-icon--menu span {
+  width: 26px;
+  height: 2px;
+  border-radius: 99px;
+  background: currentColor;
+  display: block;
+}
+
+.page-icon--bell::before,
+.page-icon--account::before,
+.page-icon--bank::before,
+.page-icon--loan::before,
+.page-icon--card::before,
+.page-icon--wallet::before,
+.page-icon--score::before,
+.page-icon--transfer-out::before,
+.page-icon--transfer-in::before,
+.page-icon--support::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 2px solid currentColor;
+  border-radius: 18px;
+}
+
+.page-icon--bell::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.page-icon--bank::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 17px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 10px 0 currentColor, 0 20px 0 currentColor;
+}
+
+.page-icon--loan::after,
+.page-icon--card::after,
+.page-icon--wallet::after,
+.page-icon--score::after,
+.page-icon--transfer-out::after,
+.page-icon--transfer-in::after,
+.page-icon--support::after,
+.page-icon--account::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 32px;
+  height: 2px;
+  background: currentColor;
+}
+
+.page-icon--transfer-out::before {
+  border-radius: 50%;
+}
+
+.page-icon--transfer-out::after {
+  left: 22px;
+  right: 16px;
+}
+
+.page-icon--transfer-in::before {
+  border-radius: 50%;
+}
+
+.page-icon--transfer-in::after {
+  left: 16px;
+  right: 22px;
+}
+
+.page-icon--support::before {
+  border-radius: 50%;
 }
 
 .detail-card {
@@ -532,6 +708,11 @@ button {
     padding-bottom: 10px;
   }
 
+  .screen[data-screen="page"] {
+    gap: 14px;
+    padding-bottom: 10px;
+  }
+
   .detail-topbar {
     min-height: 42px;
     align-items: center;
@@ -635,5 +816,24 @@ button {
     border-radius: 15px;
     font-size: 18px;
     color: #925b9d;
+  }
+
+  .primary-button {
+    min-height: 48px;
+    border-radius: 15px;
+    font-size: 18px;
+  }
+
+  .app-page__hero {
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  .app-page__hero h2 {
+    font-size: 22px;
+  }
+
+  .app-page__hero p {
+    font-size: 13px;
   }
 }
