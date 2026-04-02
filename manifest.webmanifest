@@ -1,0 +1,24 @@
+{
+  "name": "Enpara Beta",
+  "short_name": "Enpara",
+  "lang": "tr",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f0f7",
+  "theme_color": "#ffffff",
+  "description": "Enpara mobil bankacilik ekranlarinin demo PWA versiyonu.",
+  "icons": [
+    {
+      "src": "./assets/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

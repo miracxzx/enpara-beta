@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Enpara Beta" />
+    <title>Enpara Beta</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/icon-192.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="statusbar">
+        <span>14:31</span>
+        <div class="statusbar__icons" aria-hidden="true">
+          <span class="dot"></span>
+          <span class="signal"></span>
+          <span class="battery"></span>
+        </div>
+      </header>
+
+      <main class="phone-screen">
+        <section class="screen screen--active" data-screen="summary">
+          <header class="topbar">
+            <button class="icon-button icon-button--menu" type="button" aria-label="Menü">
+              <span></span><span></span><span></span>
+            </button>
+            <h1>En Özet</h1>
+            <div class="topbar__actions">
+              <button class="icon-button icon-button--ghost" type="button" aria-label="Ana sayfa">
+                <span class="home-icon"></span>
+              </button>
+              <button class="icon-button icon-button--ghost" type="button" aria-label="Bildirimler">
+                <span class="wallet-icon"></span>
+              </button>
+            </div>
+          </header>
+
+          <div class="segment-tabs" aria-hidden="true">
+            <span></span>
+            <span class="segment-tabs__active"></span>
+            <span></span>
+          </div>
+
+          <section class="card account-card">
+            <div class="account-row">
+              <span>Vadesiz TL</span>
+              <strong>0,00 TL</strong>
+            </div>
+            <div class="account-row">
+              <span>Vadesiz USD</span>
+              <strong>0,00 USD</strong>
+            </div>
+            <div class="account-row muted">
+              <span>Diğer banka hesapları</span>
+              <span class="chevron">&rsaquo;</span>
+            </div>
+          </section>
+
+          <section class="list-block">
+            <div class="list-block__title">Teklifler ve başvurular</div>
+            <button class="list-row" type="button">
+              <span>İhtiyaç kredisi</span>
+              <span class="list-row__suffix">Başvur <span class="chevron">&rsaquo;</span></span>
+            </button>
+            <button class="list-row" type="button">
+              <span>Kredi kartı</span>
+              <span class="list-row__suffix">Başvur <span class="chevron">&rsaquo;</span></span>
+            </button>
+            <button class="list-row" type="button">
+              <span>Ekpara (KMH)</span>
+              <span class="list-row__suffix">Başvur <span class="chevron">&rsaquo;</span></span>
+            </button>
+            <button class="list-row" type="button">
+              <span>Findeks risk raporu</span>
+              <span class="list-row__suffix">Başvur <span class="chevron">&rsaquo;</span></span>
+            </button>
+          </section>
+
+          <section class="list-block">
+            <div class="list-block__title">Son işlemlerim</div>
+            <div class="history-item">
+              <div>
+                <small>Bugün</small>
+                <p>Giden Transfer - Miraç Özbağ, Bireysel Ödeme...</p>
+              </div>
+              <strong>-190,00 TL</strong>
+            </div>
+            <div class="history-item">
+              <div>
+                <small>Bugün</small>
+                <p>Gelen Transfer - MELIKE LACIN, Bireysel Ödeme</p>
+              </div>
+              <strong>+190,00 TL</strong>
+            </div>
+          </section>
+
+          <section class="list-block">
+            <div class="list-block__title">Bekleyen işlemlerim</div>
+            <button class="pending-card" type="button" data-open-screen="detail">
+              <div class="pending-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none">
+                  <path d="M18 10h28M18 54h28M22 10c0 12 20 10 20 22S22 42 22 54M42 10c0 12-20 10-20 22s20 10 20 22" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="pending-card__content">
+                <strong>+521.670,00 TL Gelen SWIFT |</strong>
+                <p>Enpara.com SWIFT işlemi | Gerçekleşmesi beklenen ileri tarihli SWIFT işleminiz.</p>
+              </div>
+              <span class="chevron">&rsaquo;</span>
+            </button>
+          </section>
+        </section>
+
+        <section class="screen" data-screen="detail">
+          <header class="detail-topbar">
+            <button class="icon-button icon-button--ghost" type="button" data-open-screen="summary" aria-label="Geri">
+              <span class="back-icon"></span>
+            </button>
+            <h1>SWIFT Transfer Detayı</h1>
+            <span class="detail-topbar__spacer"></span>
+          </header>
+
+          <section class="detail-hero">
+            <div class="pending-card__icon pending-card__icon--large" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none">
+                <path d="M18 10h28M18 54h28M22 10c0 12 20 10 20 22S22 42 22 54M42 10c0 12-20 10-20 22s20 10 20 22" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h2>Bekleyen Transfer</h2>
+          </section>
+
+          <section class="card detail-card">
+            <div class="detail-row">
+              <span>Tutar</span>
+              <strong class="success">+521.670,00 TL</strong>
+            </div>
+            <div class="detail-row">
+              <span>Tarih (Beklenen)</span>
+              <strong>16 Nisan 2026 (orası ileri)</strong>
+            </div>
+            <div class="detail-row">
+              <span>Güvenlik Seri</span>
+              <span class="badge">UETR End-to-End Verified</span>
+            </div>
+            <div class="detail-row">
+              <span>Gönderici</span>
+              <strong>Freelancer.com / Aracı PTE LTD</strong>
+            </div>
+            <div class="detail-row">
+              <span>Hesap Numaranız / IBAN</span>
+              <strong>TRXX XXXX XXXX XX</strong>
+            </div>
+            <div class="detail-row">
+              <span>Muhabir Banka</span>
+              <strong>DEUTSCHE BANK AG</strong>
+            </div>
+            <div class="detail-row">
+              <span>Durum</span>
+              <strong class="warning">Yerel Dağıtım Aşamasında</strong>
+            </div>
+            <div class="detail-row">
+              <span>Konum</span>
+              <strong>interim Account (Genel Havuz)</strong>
+            </div>
+            <div class="detail-row">
+              <span>İnceleme</span>
+              <strong>MASAK/5649 Otomatik Kontrol</strong>
+            </div>
+          </section>
+
+          <section class="notice-text">
+            <p>* Mevcut gecikme hakkında bilgilendirme:</p>
+            <p>- Fon kaynağı Güvenlik Teyidi, MASAK ve 5549 kanunları gereği otomatiktir ve süreçtedir.</p>
+            <p>- Sigorta ve koruma: Tutar, muhabir bankadan aktarılana kadar uluslararası takas koruması, ekspres iç sorgu ve SWIFT gpi koruması altındadır.</p>
+            <p>- Tahmini süreç: İşlem yoğunluğuna göre veya destek belge talep edilmezse 24-48 saat (bir sonraki iş günü) içinde bakiyenize yansıması planlanmaktadır.</p>
+          </section>
+
+          <footer class="bottom-actions">
+            <button class="outline-button" type="button" data-open-screen="summary">Vazgeç</button>
+            <button class="outline-button" type="button">Destek Al</button>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

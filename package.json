@@ -1,0 +1,8 @@
+{
+  "name": "enpara-beta-pwa",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "powershell -Command \"New-Item -ItemType Directory -Force dist | Out-Null; Copy-Item index.html,styles.css,app.js,manifest.webmanifest,sw.js -Destination dist -Force; Copy-Item assets -Destination dist -Recurse -Force\""
+  }
+}
