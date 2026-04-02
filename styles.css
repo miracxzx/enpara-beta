@@ -64,10 +64,7 @@ button {
 }
 
 .statusbar {
-  justify-content: space-between;
-  padding: 2px 8px 10px;
-  font-size: 14px;
-  color: #564858;
+  display: none;
 }
 
 .statusbar__icons {
@@ -101,7 +98,7 @@ button {
 
 .phone-screen {
   position: relative;
-  min-height: calc(100dvh - 52px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 }
 
 .screen {
@@ -492,13 +489,11 @@ button {
   }
 
   .statusbar {
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: 6px;
+    display: none;
   }
 
   .phone-screen {
-    min-height: calc(100dvh - 44px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 
   .screen {
